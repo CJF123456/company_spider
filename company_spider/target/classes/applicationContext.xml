@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.unbank" />
+	<tx:annotation-driven />
+
+
+
+
+	<!-- 辽宁系统采集定时任务 -->
+	<!-- 定时检测内容 -->
+	<bean id="startSpiderByCompanyQuartzJobTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject" ref="startCrawlQuartzJobToCompany">
+		</property>
+		<!-- 调用类中的方法 -->
+		<property name="targetMethod" value="executeInternal">
+		</property>
+	</bean>
+	<!-- 任务触发器 -->
+	<bean id="startSpiderByCompanyQuartzTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="startSpiderByCompanyQuartzJobTask" />
+		</property>
+		<property name="cronExpression">
+			<value>01 25 16 15 8 ?</value>
+		</property>
+	</bean>
+
+<!-- 新疆系统采集定时任务 -->
+	<!-- 定时检测内容 -->
+	<bean id="startSpiderByCompanyQuartzJobTaskByXinjiang"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject" ref="startCrawlQuartzJobToCompanyXinjiang">
+		</property>
+		<!-- 调用类中的方法 -->
+		<property name="targetMethod" value="executeInternal">
+		</property>
+	</bean>
+	<!-- 任务触发器 -->
+	<bean id="startSpiderByCompanyQuartzTriggerByXinjiang"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="startSpiderByCompanyQuartzJobTaskByXinjiang" />
+		</property>
+		<property name="cronExpression">
+			<value>01 30 16 15 8 ?</value>
+		</property>
+	</bean>
+
+
+
+<!-- 安徽采集定时任务 -->
+	<!-- 定时检测内容 -->
+	<bean id="startSpiderByCompanyQuartzJobTaskByAH"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject" ref="startCrawlQuartzJobToCompanyAH">
+		</property>
+		<!-- 调用类中的方法 -->
+		<property name="targetMethod" value="executeInternal">
+		</property>
+	</bean>
+	<!-- 任务触发器 -->
+	<bean id="startSpiderByCompanyQuartzTriggerByAH"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="startSpiderByCompanyQuartzJobTaskByAH" />
+		</property>
+		<property name="cronExpression">
+			<value>01 57 16 18 8 ?</value>
+		</property>
+	</bean>
+
+	<!-- 任务调度入口 -->
+	<bean lazy-init="false"
+
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="startSpiderByCompanyQuartzTrigger" />
+				<ref bean="startSpiderByCompanyQuartzTriggerByXinjiang" />
+				<ref bean="startSpiderByCompanyQuartzTriggerByAH" />
+				
+			</list>
+		</property>
+	</bean>
+</beans>
